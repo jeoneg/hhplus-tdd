@@ -63,6 +63,43 @@ class PointHistoryServiceTest {
         verify(pointHistoryTable, times(1)).selectAllByUserId(id);
     }
 
+    @Test
+    void 포인트_이력을_저장할_때_사용자_아이디가_유효하지_않으면_IllegalArgumentException을_반환한다() {
+        // given
+        long userId = 0L;
+        long amount = 1000L;
+        TransactionType type = CHARGE;
+        long updateMillis = System.currentTimeMillis();
+
+        // when then
+        assertThatThrownBy(() -> sut.saveHistory(userId, amount, type, updateMillis))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("유효하지 않은 사용자 아이디입니다.");
+
+        verify(pointHistoryTable, never()).insert(userId, amount, type, updateMillis);
+    }
+
+    @Test
+    void 포인트_충전_이력을_저장하면_저장된_포인트_충전_이력을_반환한다() {
+        // given
+        long userId = 1L;
+        long chargingPoint = 1000L;
+        TransactionType type = CHARGE;
+        long updateMillis = System.currentTimeMillis();
+        when(pointHistoryTable.insert(userId, chargingPoint, type, updateMillis)).thenReturn(createPointHistory(1L, userId, chargingPoint, type, updateMillis));
+
+        // when
+        PointHistory result = sut.saveHistory(userId, chargingPoint, type, updateMillis);
+
+        // then
+        assertThat(result.userId()).isEqualTo(userId);
+        assertThat(result.amount()).isEqualTo(chargingPoint);
+        assertThat(result.type()).isEqualTo(type);
+        assertThat(result.updateMillis()).isEqualTo(updateMillis);
+
+        verify(pointHistoryTable, times(1)).insert(userId, chargingPoint, type, updateMillis);
+    }
+
     private PointHistory createPointHistory(long id, long userId, long amount, TransactionType type, long updateMillis) {
         return new PointHistory(id, userId, amount, type, updateMillis);
     }

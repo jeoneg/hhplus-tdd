@@ -18,4 +18,14 @@ public class UserPointService {
         return userPointTable.selectById(id);
     }
 
+    public UserPoint chargePoint(long id, long amount, long updateMillis) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("유효하지 않은 사용자 아이디입니다.");
+        }
+
+        UserPoint userPoint = userPointTable.selectById(id);
+        UserPoint updatedUserPoint = userPoint.charge(amount, updateMillis);
+        return userPointTable.insertOrUpdate(id, updatedUserPoint.point());
+    }
+
 }
