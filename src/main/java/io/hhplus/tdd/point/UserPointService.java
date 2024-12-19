@@ -28,4 +28,14 @@ public class UserPointService {
         return userPointTable.insertOrUpdate(id, updatedUserPoint.point());
     }
 
+    public UserPoint usePoint(long id, long amount, long updateMillis) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("유효하지 않은 사용자 아이디입니다.");
+        }
+
+        UserPoint userPoint = userPointTable.selectById(id);
+        UserPoint updatedUserPoint = userPoint.use(amount, updateMillis);
+        return userPointTable.insertOrUpdate(id, updatedUserPoint.point());
+    }
+
 }
