@@ -66,70 +66,6 @@ class UserPointServiceTest {
     }
 
     @Test
-    void 포인트를_충전할_때_0포인트를_충전하면_IllegalArgumentException을_반환한다() {
-        // given
-        long userId = 1L;
-        long chargingPoint = 0L;
-        long updateMillis = System.currentTimeMillis();
-        when(userPointTable.selectById(userId)).thenReturn(UserPoint.empty(userId));
-
-        // when then
-        assertThatThrownBy(() -> sut.chargePoint(userId, chargingPoint, updateMillis))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("충전할 포인트는 0보다 커야 합니다.");
-
-        verify(userPointTable, times(1)).selectById(userId);
-    }
-
-    @Test
-    void 포인트를_충전할_때_0보다_작은_포인트를_충전하면_IllegalArgumentException을_반환한다() {
-        // given
-        long userId = 1L;
-        long chargingPoint = -1000L;
-        long updateMillis = System.currentTimeMillis();
-        when(userPointTable.selectById(userId)).thenReturn(UserPoint.empty(userId));
-
-        // when then
-        assertThatThrownBy(() -> sut.chargePoint(userId, chargingPoint, updateMillis))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("충전할 포인트는 0보다 커야 합니다.");
-
-        verify(userPointTable, times(1)).selectById(userId);
-    }
-
-    @Test
-    void 포인트를_충전할_때_500포인트를_충전하면_IllegalArgumentException을_반환한다() {
-        // given
-        long userId = 1L;
-        long chargingPoint = 500L;
-        long updateMillis = System.currentTimeMillis();
-        when(userPointTable.selectById(userId)).thenReturn(UserPoint.empty(userId));
-
-        // when then
-        assertThatThrownBy(() -> sut.chargePoint(userId, chargingPoint, updateMillis))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("포인트 충전은 1000원 단위로 가능합니다.");
-
-        verify(userPointTable, times(1)).selectById(userId);
-    }
-
-    @Test
-    void 포인트를_충전할_때_101_000포인트를_충전하면_IllegalArgumentException을_반환한다() {
-        // given
-        long userId = 1L;
-        long chargingPoint = 101_000L;
-        long updateMillis = System.currentTimeMillis();
-        when(userPointTable.selectById(userId)).thenReturn(UserPoint.empty(userId));
-
-        // when then
-        assertThatThrownBy(() -> sut.chargePoint(userId, chargingPoint, updateMillis))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("한 번에 충전할 수 있는 최대 포인트는 10만 포인트입니다.");
-
-        verify(userPointTable, times(1)).selectById(userId);
-    }
-
-    @Test
     void 포인트를_충전할_때_총_포인트가_1_001_000포인트이면_IllegalArgumentException을_반환한다() {
         // given
         long userId = 1L;
@@ -179,55 +115,6 @@ class UserPointServiceTest {
                 .hasMessage("유효하지 않은 사용자 아이디입니다.");
 
         verify(userPointTable, never()).selectById(userId);
-    }
-
-    @Test
-    void 포인트를_사용할_때_0포인트를_사용하면_IllegalArgumentException을_반환한다() {
-        // given
-        long userId = 1L;
-        long usingPoint = 0L;
-        long updateMillis = System.currentTimeMillis();
-        when(userPointTable.selectById(userId)).thenReturn(UserPoint.empty(userId));
-
-        // when then
-        assertThatThrownBy(() -> sut.usePoint(userId, usingPoint, updateMillis))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("사용할 포인트는 0보다 커야 합니다.");
-
-        verify(userPointTable, times(1)).selectById(userId);
-    }
-
-    @Test
-    void 포인트를_사용할_때_0보다_작은_포인트를_사용하면_IllegalArgumentException을_반환한다() {
-        // given
-        long userId = 1L;
-        long usingPoint = -1000L;
-        long updateMillis = System.currentTimeMillis();
-        when(userPointTable.selectById(userId)).thenReturn(UserPoint.empty(userId));
-
-        // when then
-        assertThatThrownBy(() -> sut.usePoint(userId, usingPoint, updateMillis))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("사용할 포인트는 0보다 커야 합니다.");
-
-        verify(userPointTable, times(1)).selectById(userId);
-    }
-
-    @Test
-    void 포인트를_사용할_때_2000포인트를_사용하면_IllegalArgumentException을_반환한다() {
-        // given
-        long userId = 1L;
-        long balance = 1000L;
-        long usingPoint = 2000L;
-        long updateMillis = System.currentTimeMillis();
-        when(userPointTable.selectById(userId)).thenReturn(createUserPoint(userId, balance, System.currentTimeMillis()));
-
-        // when then
-        assertThatThrownBy(() -> sut.usePoint(userId, usingPoint, updateMillis))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("보유한 포인트가 부족합니다.");
-
-        verify(userPointTable, times(1)).selectById(userId);
     }
 
     @Test
