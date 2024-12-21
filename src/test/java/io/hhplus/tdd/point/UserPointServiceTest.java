@@ -1,9 +1,10 @@
 package io.hhplus.tdd.point;
 
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.lock.FakeLockManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -14,11 +15,15 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserPointServiceTest {
 
-    @InjectMocks
     private UserPointService sut;
 
     @Mock
     private UserPointTable userPointTable;
+
+    @BeforeEach
+    void setUp() {
+        sut = new UserPointService(userPointTable, new FakeLockManager());
+    }
 
     @Test
     void 포인트를_조회할_때_사용자_아이디가_유효하지_않으면_IllegalArgumentException을_반환한다() {
